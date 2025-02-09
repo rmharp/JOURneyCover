@@ -87,9 +87,9 @@
         font-weight: bold;
       }
       .sortable-item img {
-        /* Display images in portrait mode */
+        /* Display images in portrait mode and make them a bit larger */
         max-width: 100%;
-        max-height: 400px;
+        max-height: 600px;
         object-fit: contain;
         user-select: none;
         /* Prevent image’s own dragging */
@@ -128,8 +128,7 @@
         </div>
         <p>Drag and drop the covers to rank them (top is most preferred):</p>
         <ul id="sortable" class="sortable-list">
-          <!-- Each sortable item includes a rank badge and a portrait image.
-               The images have ondragstart="return false" to disable ghost dragging. -->
+          <!-- Cover items 1 to 15 -->
           <li class="sortable-item" data-id="1" draggable="true">
             <div class="rank-indicator"></div>
             <img src="./media/cover1.jpg" alt="Cover 1" draggable="false" ondragstart="return false;" />
@@ -142,7 +141,54 @@
             <div class="rank-indicator"></div>
             <img src="./media/cover3.jpg" alt="Cover 3" draggable="false" ondragstart="return false;" />
           </li>
-          <!-- Add additional cover items as needed -->
+          <li class="sortable-item" data-id="4" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover4.jpg" alt="Cover 4" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="5" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover5.jpg" alt="Cover 5" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="6" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover6.jpg" alt="Cover 6" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="7" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover7.jpg" alt="Cover 7" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="8" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover8.jpg" alt="Cover 8" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="9" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover9.jpg" alt="Cover 9" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="10" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover10.jpg" alt="Cover 10" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="11" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover11.jpg" alt="Cover 11" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="12" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover12.jpg" alt="Cover 12" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="13" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover13.jpg" alt="Cover 13" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="14" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover14.jpg" alt="Cover 14" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="15" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover15.jpg" alt="Cover 15" draggable="false" ondragstart="return false;" />
+          </li>
         </ul>
         <button type="submit">Submit Vote</button>
       </form>
@@ -163,7 +209,7 @@
         });
       }
 
-      // Initialize SortableJS with forceFallback to ensure smooth dragging.
+      // Initialize SortableJS with forceFallback enabled for smoother dragging.
       new Sortable(document.getElementById("sortable"), {
         animation: 150,
         forceFallback: true,
@@ -190,7 +236,7 @@
         });
         const rankingStr = ranking.join(",");
 
-        // Replace with your deployed Apps Script web app URL.
+        // Use your deployed Apps Script web app URL.
         const scriptURL = "https://script.google.com/macros/s/AKfycbxOqbH7fztisgKudVIToXgyjD6UHz6MYleIhGW21iMcLrP4gCBnCkbat9BONnof4oSxXA/exec";
 
         // Prepare URL-encoded parameters.
