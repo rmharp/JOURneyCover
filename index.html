@@ -198,7 +198,7 @@
     <!-- Include SortableJS (without integrity attribute) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <script>
-      // Update rank badges based on current order.
+      // Function to update rank badges
       function updateRanks() {
         const items = document.querySelectorAll('#sortable .sortable-item');
         items.forEach((item, index) => {
@@ -209,15 +209,29 @@
         });
       }
 
-      // Initialize SortableJS with forceFallback enabled for smoother dragging.
-      new Sortable(document.getElementById("sortable"), {
+      // Initialize SortableJS with forceFallback enabled.
+      const sortableInstance = new Sortable(document.getElementById("sortable"), {
         animation: 150,
         forceFallback: true,
         onEnd: updateRanks,
       });
-      updateRanks();
 
-      // Handle form submission.
+      // Randomize the order of covers on page load
+      document.addEventListener("DOMContentLoaded", () => {
+        const sortable = document.getElementById("sortable");
+        const itemsArray = Array.from(sortable.querySelectorAll(".sortable-item"));
+        for (let i = itemsArray.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [itemsArray[i], itemsArray[j]] = [itemsArray[j], itemsArray[i]];
+        }
+        sortable.innerHTML = "";
+        itemsArray.forEach(item => {
+          sortable.appendChild(item);
+        });
+        updateRanks();
+      });
+
+      // Handle form submission (existing code remains)
       document.getElementById("voteForm").addEventListener("submit", function (e) {
         e.preventDefault();
 
