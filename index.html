@@ -53,10 +53,10 @@
         border: none;
         border-radius: 4px;
       }
-      /* Styles for the sortable list as portrait boxes */
+      /* Grid layout for the sortable list: 2 columns */
       .sortable-list {
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
         gap: 15px;
         padding: 0;
         margin: 20px 0;
@@ -87,7 +87,7 @@
         font-weight: bold;
       }
       .sortable-item img {
-        /* Display images in portrait mode and make them a bit larger */
+        /* Display images in portrait mode and make them larger */
         max-width: 100%;
         max-height: 600px;
         object-fit: contain;
@@ -128,7 +128,7 @@
         </div>
         <p>Drag and drop the covers to rank them (top is most preferred):</p>
         <ul id="sortable" class="sortable-list">
-          <!-- Cover items 1 to 15 -->
+          <!-- Cover items 1 to 22 -->
           <li class="sortable-item" data-id="1" draggable="true">
             <div class="rank-indicator"></div>
             <img src="./media/cover1.jpg" alt="Cover 1" draggable="false" ondragstart="return false;" />
@@ -189,6 +189,34 @@
             <div class="rank-indicator"></div>
             <img src="./media/cover15.jpg" alt="Cover 15" draggable="false" ondragstart="return false;" />
           </li>
+          <li class="sortable-item" data-id="16" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover16.jpg" alt="Cover 16" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="17" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover17.jpg" alt="Cover 17" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="18" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover18.jpg" alt="Cover 18" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="19" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover19.jpg" alt="Cover 19" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="20" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover20.jpg" alt="Cover 20" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="21" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover21.jpg" alt="Cover 21" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="22" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover22.jpg" alt="Cover 22" draggable="false" ondragstart="return false;" />
+          </li>
         </ul>
         <button type="submit">Submit Vote</button>
       </form>
@@ -198,7 +226,7 @@
     <!-- Include SortableJS (without integrity attribute) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <script>
-      // Function to update rank badges
+      // Function to update rank badges based on DOM order.
       function updateRanks() {
         const items = document.querySelectorAll('#sortable .sortable-item');
         items.forEach((item, index) => {
@@ -210,13 +238,14 @@
       }
 
       // Initialize SortableJS with forceFallback enabled.
-      const sortableInstance = new Sortable(document.getElementById("sortable"), {
+      new Sortable(document.getElementById("sortable"), {
         animation: 150,
         forceFallback: true,
         onEnd: updateRanks,
       });
+      updateRanks();
 
-      // Randomize the order of covers on page load
+      // Randomize the order of covers on page load.
       document.addEventListener("DOMContentLoaded", () => {
         const sortable = document.getElementById("sortable");
         const itemsArray = Array.from(sortable.querySelectorAll(".sortable-item"));
@@ -231,7 +260,7 @@
         updateRanks();
       });
 
-      // Handle form submission (existing code remains)
+      // Handle form submission.
       document.getElementById("voteForm").addEventListener("submit", function (e) {
         e.preventDefault();
 
@@ -242,7 +271,7 @@
           return;
         }
 
-        // Get the current order of image IDs.
+        // Get the current order of cover IDs.
         const items = document.querySelectorAll("#sortable .sortable-item");
         const ranking = [];
         items.forEach(item => {
