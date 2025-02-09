@@ -159,11 +159,91 @@
         <p>Drag and drop the covers to rank them (top is most preferred):</p>
         <ul id="sortable" class="sortable-list">
           <!-- Cover items 1 to 22 -->
+          <!-- Cover items 1 to 22 -->
           <li class="sortable-item" data-id="1" draggable="true">
             <div class="rank-indicator"></div>
             <img src="./media/cover1.jpg" alt="Cover 1" draggable="false" ondragstart="return false;" />
           </li>
-          <!-- … similar list items for covers 2 to 22 … -->
+          <li class="sortable-item" data-id="2" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover2.jpg" alt="Cover 2" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="3" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover3.jpg" alt="Cover 3" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="4" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover4.jpg" alt="Cover 4" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="5" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover5.jpg" alt="Cover 5" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="6" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover6.jpg" alt="Cover 6" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="7" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover7.jpg" alt="Cover 7" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="8" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover8.jpg" alt="Cover 8" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="9" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover9.jpg" alt="Cover 9" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="10" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover10.jpg" alt="Cover 10" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="11" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover11.jpg" alt="Cover 11" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="12" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover12.jpg" alt="Cover 12" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="13" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover13.jpg" alt="Cover 13" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="14" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover14.jpg" alt="Cover 14" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="15" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover15.jpg" alt="Cover 15" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="16" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover16.jpg" alt="Cover 16" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="17" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover17.jpg" alt="Cover 17" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="18" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover18.jpg" alt="Cover 18" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="19" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover19.jpg" alt="Cover 19" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="20" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover20.jpg" alt="Cover 20" draggable="false" ondragstart="return false;" />
+          </li>
+          <li class="sortable-item" data-id="21" draggable="true">
+            <div class="rank-indicator"></div>
+            <img src="./media/cover21.jpg" alt="Cover 21" draggable="false" ondragstart="return false;" />
+          </li>
           <li class="sortable-item" data-id="22" draggable="true">
             <div class="rank-indicator"></div>
             <img src="./media/cover22.jpg" alt="Cover 22" draggable="false" ondragstart="return false;" />
@@ -198,7 +278,7 @@
       new Sortable(document.getElementById("sortable"), {
         animation: 150,
         forceFallback: true,
-        delay: 200, // delay in ms before dragging starts so that quick taps register as clicks
+        delay: 50, // delay in ms before dragging starts so that quick taps register as clicks
         onEnd: updateRanks,
       });
       updateRanks();
