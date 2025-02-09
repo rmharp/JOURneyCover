@@ -6,6 +6,8 @@
     <title>JOURney Journal Cover Voting</title>
     <!-- favicon -->
     <link rel="shortcut icon" href="./media/favicon.png" type="image/png" />
+    <!-- custom css -->
+    <link rel="stylesheet" href="./assets/css/style.css" />
     <!-- Google Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -64,7 +66,7 @@
         padding: 10px;
         border-bottom: 1px solid #333;
         cursor: move;
-        /* Allow dragging on touch devices */
+        /* Helps touch devices work correctly */
         touch-action: none;
       }
       .sortable-item:last-child {
@@ -107,18 +109,21 @@
           <label for="lastName">Last Name:</label>
           <input type="text" id="lastName" name="lastName" required />
         </div>
-        <p>Drag and drop the images to rank them from your most‑preferred cover (top) to least‑preferred (bottom):</p>
+        <p>
+          Drag and drop the images to rank them from your most‑preferred cover (top)
+          to least‑preferred (bottom):
+        </p>
         <ul id="sortable" class="sortable-list">
-          <!-- Each list item represents an image option. -->
-          <li class="sortable-item" data-id="1">
+          <!-- Adding draggable="true" helps ensure the list items are movable -->
+          <li class="sortable-item" data-id="1" draggable="true">
             <img src="./media/cover1.jpg" alt="Cover Option 1" />
             Cover Option 1
           </li>
-          <li class="sortable-item" data-id="2">
+          <li class="sortable-item" data-id="2" draggable="true">
             <img src="./media/cover2.jpg" alt="Cover Option 2" />
             Cover Option 2
           </li>
-          <li class="sortable-item" data-id="3">
+          <li class="sortable-item" data-id="3" draggable="true">
             <img src="./media/cover3.jpg" alt="Cover Option 3" />
             Cover Option 3
           </li>
@@ -130,61 +135,62 @@
     </main>
 
     <!-- Include SortableJS from a CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"
       integrity="sha512-XePTMnqH6J/t+4JAXCys/MB5aZqj6ScTg3h5RSbxE+hv9GNWnXG6mI/hXotR/fqIjTxbebOiMGdlrsb7j0whXA=="
-      crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
     <script>
-      // Initialize Sortable for the list
-      new Sortable(document.getElementById('sortable'), {
-        animation: 150
+      // Initialize Sortable on the list.
+      new Sortable(document.getElementById("sortable"), {
+        animation: 150,
       });
 
-      document.getElementById('voteForm').addEventListener('submit', function(e) {
+      document.getElementById("voteForm").addEventListener("submit", function (e) {
         e.preventDefault();
 
-        const firstName = document.getElementById('firstName').value.trim();
-        const lastName = document.getElementById('lastName').value.trim();
+        const firstName = document.getElementById("firstName").value.trim();
+        const lastName = document.getElementById("lastName").value.trim();
         if (!firstName || !lastName) {
-          document.getElementById('message').innerText = 'Please enter your first and last name.';
+          document.getElementById("message").innerText = "Please enter your first and last name.";
           return;
         }
 
-        // Gather the ranked order from the list (top item is highest ranked)
-        const items = document.querySelectorAll('#sortable .sortable-item');
+        // Gather the ranked order from the list (the top item is highest ranked)
+        const items = document.querySelectorAll("#sortable .sortable-item");
         const ranking = [];
-        items.forEach(item => {
-          ranking.push(item.getAttribute('data-id'));
+        items.forEach((item) => {
+          ranking.push(item.getAttribute("data-id"));
         });
-        // Create a comma-separated string from the ranking array
-        const rankingStr = ranking.join(',');
+        // Create a comma‑separated string from the ranking array
+        const rankingStr = ranking.join(",");
 
-        // Replace with your deployed Google Apps Script web app URL
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbyHugB4tHkeUbVSOIoItnhwmxg7C9GStb_EmM344yVQEUQ54_tHpIFVYYCzh5pOAN3Xiw/exec';
+        // Replace with your deployed Google Apps Script web app URL.
+        const scriptURL = "https://script.google.com/macros/s/AKfycbzM0cFS8WFZH1QpKivNqEo_Kw0IcO1zXvmV8ZWqNNyNRrBULsFCo1R2svafpfWH5xDilw/exec";
 
-        // Create URL-encoded parameters. Note: we now use 'vector' (not 'ranking')
+        // Create URL‑encoded parameters. (We now use "vector" as the key.)
         const formData = new URLSearchParams();
-        formData.append('firstName', firstName);
-        formData.append('lastName', lastName);
-        formData.append('vector', rankingStr);
+        formData.append("firstName", firstName);
+        formData.append("lastName", lastName);
+        formData.append("vector", rankingStr);
 
+        // Use no-cors mode to avoid CORS issues (note: the response is opaque).
         fetch(scriptURL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: formData.toString()
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: formData.toString(),
         })
-          .then(response => response.json())
-          .then(data => {
-            if (data.averages) {
-              document.getElementById('message').innerText = 'Vote submitted successfully!';
-              // Optionally, clear the form (or disable further submissions)
-              document.getElementById('voteForm').reset();
-            } else {
-              document.getElementById('message').innerText = data.message || 'Vote not recorded.';
-            }
+          .then(() => {
+            // In no-cors mode, we assume success if no error is thrown.
+            document.getElementById("message").innerText = "Vote submitted successfully!";
+            document.getElementById("voteForm").reset();
           })
-          .catch(error => {
-            console.error('Error submitting vote:', error);
-            document.getElementById('message').innerText = 'Error submitting vote. Please try again later.';
+          .catch((error) => {
+            console.error("Error submitting vote:", error);
+            document.getElementById("message").innerText =
+              "Error submitting vote. Please try again later.";
           });
       });
     </script>
