@@ -375,9 +375,8 @@
           })
           .then(data => {
             if (data.status === "success") {
-              document.getElementById("message").innerText = "Vote submitted successfully!";
-              document.getElementById("voteForm").reset();
-              updateRanks();
+              // Redirect to the submission success page.
+              window.location.href = "submission_success.html";
             } else {
               document.getElementById("message").innerText = data.message || "Vote not recorded.";
             }
