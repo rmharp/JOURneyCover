@@ -53,7 +53,7 @@
         border: none;
         border-radius: 4px;
       }
-      /* Grid layout for the sortable list: 2 columns */
+      /* Grid layout: 2 columns for portrait covers */
       .sortable-list {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
@@ -67,11 +67,10 @@
         padding: 10px;
         border: 1px solid #333;
         border-radius: 8px;
-        /* Use a column layout and center items both horizontally and vertically */
         display: flex;
         flex-direction: column;
-        justify-content: center;  /* centers content vertically */
-        align-items: center;      /* centers content horizontally */
+        justify-content: center; /* centers vertically */
+        align-items: center;     /* centers horizontally */
         cursor: move;
         touch-action: none;
       }
@@ -88,12 +87,10 @@
         font-weight: bold;
       }
       .sortable-item img {
-        /* Display images in portrait mode and make them larger */
         max-width: 100%;
         max-height: 600px;
         object-fit: contain;
         user-select: none;
-        /* Prevent image’s own dragging */
         pointer-events: none;
       }
       button {
@@ -112,6 +109,37 @@
         margin-top: 20px;
         text-align: center;
         font-weight: bold;
+      }
+      /* Modal (Lightbox) Styles */
+      .modal {
+        display: none; /* Hidden by default */
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.9);
+      }
+      .modal-content {
+        margin: auto;
+        display: block;
+        max-width: 90%;
+        max-height: 90%;
+      }
+      .close {
+        position: absolute;
+        top: 20px;
+        right: 35px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .close:hover,
+      .close:focus {
+        color: #bbb;
       }
     </style>
   </head>
@@ -224,6 +252,12 @@
       <div id="message" class="message"></div>
     </main>
 
+    <!-- Modal for Enlarged Image -->
+    <div id="imageModal" class="modal">
+      <span class="close" id="closeModal">&times;</span>
+      <img class="modal-content" id="modalImg" />
+    </div>
+
     <!-- Include SortableJS (without integrity attribute) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <script>
@@ -259,6 +293,27 @@
           sortable.appendChild(item);
         });
         updateRanks();
+
+        // Add click event to each image to open modal.
+        document.querySelectorAll(".sortable-item img").forEach(img => {
+          img.addEventListener("click", function () {
+            const modal = document.getElementById("imageModal");
+            const modalImg = document.getElementById("modalImg");
+            modal.style.display = "block";
+            modalImg.src = this.src;
+          });
+        });
+      });
+
+      // Close modal when clicking on the close button or outside the image.
+      document.getElementById("closeModal").addEventListener("click", function () {
+        document.getElementById("imageModal").style.display = "none";
+      });
+      // Also close if clicking anywhere on the modal background.
+      document.getElementById("imageModal").addEventListener("click", function (e) {
+        if (e.target === this) {
+          this.style.display = "none";
+        }
       });
 
       // Handle form submission.
