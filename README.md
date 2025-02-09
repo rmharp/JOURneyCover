@@ -21,7 +21,7 @@ This project is a web-based ranked-choice voting system designed for selecting t
        ```
 
 3. **Optimize and Upload Images:**
-   - Place your cover images (`cover1.jpg` through `cover22.jpg`) in the `./media/` folder.
+   - Place your cover images (`cover1.jpg` through `cover24.jpg`) in the `./media/` folder.
    - Use an image compression tool (like [TinyPNG](https://tinypng.com/)) if needed.
 
 4. **Configure Google Apps Script:**
