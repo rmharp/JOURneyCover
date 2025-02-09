@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Ranked Decision Voting</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23007bff'/%3E%3C/svg%3E">
   <style>
     /* Basic styling */
     body {
