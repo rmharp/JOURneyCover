@@ -66,7 +66,7 @@
         padding: 10px;
         border-bottom: 1px solid #333;
         cursor: move;
-        /* Helps touch devices work correctly */
+        /* Helps with dragging on touch devices */
         touch-action: none;
       }
       .sortable-item:last-child {
@@ -114,7 +114,7 @@
           to least‑preferred (bottom):
         </p>
         <ul id="sortable" class="sortable-list">
-          <!-- Adding draggable="true" helps ensure the list items are movable -->
+          <!-- Adding draggable="true" is optional when using forceFallback -->
           <li class="sortable-item" data-id="1" draggable="true">
             <img src="./media/cover1.jpg" alt="Cover Option 1" />
             Cover Option 1
@@ -142,9 +142,10 @@
       referrerpolicy="no-referrer"
     ></script>
     <script>
-      // Initialize Sortable on the list.
+      // Initialize Sortable with forceFallback enabled.
       new Sortable(document.getElementById("sortable"), {
         animation: 150,
+        forceFallback: true
       });
 
       document.getElementById("voteForm").addEventListener("submit", function (e) {
@@ -167,25 +168,28 @@
         const rankingStr = ranking.join(",");
 
         // Replace with your deployed Google Apps Script web app URL.
-        const scriptURL = "https://script.google.com/macros/s/AKfycbzM0cFS8WFZH1QpKivNqEo_Kw0IcO1zXvmV8ZWqNNyNRrBULsFCo1R2svafpfWH5xDilw/exec";
+        const scriptURL = "https://script.google.com/macros/s/AKfycbytFs1fQy8MECwMG6r2qvtgVmvIq9gz5-Z0ji0xIk76UdHSUbDJoNaFoulk5mbGuDqrdw/exec";
 
-        // Create URL‑encoded parameters. (We now use "vector" as the key.)
+        // Create URL‑encoded parameters (using key "vector")
         const formData = new URLSearchParams();
         formData.append("firstName", firstName);
         formData.append("lastName", lastName);
         formData.append("vector", rankingStr);
 
-        // Use no-cors mode to avoid CORS issues (note: the response is opaque).
         fetch(scriptURL, {
           method: "POST",
-          mode: "no-cors",
+          mode: "cors", // Use CORS mode (see Apps Script below)
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: formData.toString(),
         })
-          .then(() => {
-            // In no-cors mode, we assume success if no error is thrown.
-            document.getElementById("message").innerText = "Vote submitted successfully!";
-            document.getElementById("voteForm").reset();
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.averages) {
+              document.getElementById("message").innerText = "Vote submitted successfully!";
+              document.getElementById("voteForm").reset();
+            } else {
+              document.getElementById("message").innerText = data.message || "Vote not recorded.";
+            }
           })
           .catch((error) => {
             console.error("Error submitting vote:", error);
