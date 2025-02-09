@@ -278,7 +278,7 @@
       new Sortable(document.getElementById("sortable"), {
         animation: 150,
         forceFallback: true,
-        delay: 50, // delay in ms before dragging starts so that quick taps register as clicks
+        delay: 10, // delay in ms before dragging starts so that quick taps register as clicks
         onEnd: updateRanks,
       });
       updateRanks();
