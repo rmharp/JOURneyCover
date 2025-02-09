@@ -77,6 +77,9 @@
         height: auto;
         margin-right: 20px;
         border-radius: 4px;
+        /* Prevent the image from being dragged on its own */
+        pointer-events: none;
+        draggable: false;
       }
       button {
         padding: 10px 20px;
@@ -110,22 +113,18 @@
           <input type="text" id="lastName" name="lastName" required />
         </div>
         <p>
-          Drag and drop the images to rank them from your most‑preferred cover (top)
-          to least‑preferred (bottom):
+          Drag and drop the covers to rank them (top is most preferred):
         </p>
         <ul id="sortable" class="sortable-list">
-          <!-- Adding draggable="true" is optional when using forceFallback -->
+          <!-- Only images, no text labels. The img elements have draggable="false" -->
           <li class="sortable-item" data-id="1" draggable="true">
-            <img src="./media/cover1.jpg" alt="Cover Option 1" />
-            Cover Option 1
+            <img src="./media/cover1.jpg" alt="Cover 1" draggable="false" />
           </li>
           <li class="sortable-item" data-id="2" draggable="true">
-            <img src="./media/cover2.jpg" alt="Cover Option 2" />
-            Cover Option 2
+            <img src="./media/cover2.jpg" alt="Cover 2" draggable="false" />
           </li>
           <li class="sortable-item" data-id="3" draggable="true">
-            <img src="./media/cover3.jpg" alt="Cover Option 3" />
-            Cover Option 3
+            <img src="./media/cover3.jpg" alt="Cover 3" draggable="false" />
           </li>
           <!-- Add additional cover options as needed -->
         </ul>
@@ -134,10 +133,10 @@
       <div id="message" class="message"></div>
     </main>
 
-    <!-- Include SortableJS from a CDN without the integrity attribute -->
+    <!-- Include SortableJS from a CDN (without the integrity attribute) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <script>
-      // Initialize Sortable with forceFallback enabled to allow manual dragging.
+      // Initialize Sortable with forceFallback enabled.
       new Sortable(document.getElementById("sortable"), {
         animation: 150,
         forceFallback: true
@@ -173,7 +172,7 @@
 
         fetch(scriptURL, {
           method: "POST",
-          mode: "cors", // Use CORS mode so that the response is available
+          mode: "cors", // Use CORS so that the response is available
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: formData.toString(),
         })
@@ -184,7 +183,7 @@
             return response.json();
           })
           .then((data) => {
-            if (data.averages) {
+            if (data.status === "success") {
               document.getElementById("message").innerText = "Vote submitted successfully!";
               document.getElementById("voteForm").reset();
             } else {
@@ -193,8 +192,7 @@
           })
           .catch((error) => {
             console.error("Error submitting vote:", error);
-            document.getElementById("message").innerText =
-              "Error submitting vote. Please try again later.";
+            document.getElementById("message").innerText = "Error submitting vote. Please try again later.";
           });
       });
     </script>
