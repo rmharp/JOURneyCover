@@ -134,15 +134,10 @@
       <div id="message" class="message"></div>
     </main>
 
-    <!-- Include SortableJS from a CDN -->
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"
-      integrity="sha512-XePTMnqH6J/t+4JAXCys/MB5aZqj6ScTg3h5RSbxE+hv9GNWnXG6mI/hXotR/fqIjTxbebOiMGdlrsb7j0whXA=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
+    <!-- Include SortableJS from a CDN without the integrity attribute -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <script>
-      // Initialize Sortable with forceFallback enabled.
+      // Initialize Sortable with forceFallback enabled to allow manual dragging.
       new Sortable(document.getElementById("sortable"), {
         animation: 150,
         forceFallback: true
@@ -158,7 +153,7 @@
           return;
         }
 
-        // Gather the ranked order from the list (the top item is highest ranked)
+        // Gather the ranked order from the list (top item is highest ranked)
         const items = document.querySelectorAll("#sortable .sortable-item");
         const ranking = [];
         items.forEach((item) => {
@@ -168,7 +163,7 @@
         const rankingStr = ranking.join(",");
 
         // Replace with your deployed Google Apps Script web app URL.
-        const scriptURL = "https://script.google.com/macros/s/AKfycbytFs1fQy8MECwMG6r2qvtgVmvIq9gz5-Z0ji0xIk76UdHSUbDJoNaFoulk5mbGuDqrdw/exec";
+        const scriptURL = "https://script.google.com/macros/s/AKfycbzfuS2BhjgA-biI-1xZqAUK3dXwTnGIk1r0dqDdFZljphcdgqxkp0IFODoS3U3TQt5wpA/exec";
 
         // Create URL‑encoded parameters (using key "vector")
         const formData = new URLSearchParams();
@@ -178,11 +173,16 @@
 
         fetch(scriptURL, {
           method: "POST",
-          mode: "cors", // Use CORS mode (see Apps Script below)
+          mode: "cors", // Use CORS mode so that the response is available
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: formData.toString(),
         })
-          .then((response) => response.json())
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.json();
+          })
           .then((data) => {
             if (data.averages) {
               document.getElementById("message").innerText = "Vote submitted successfully!";
