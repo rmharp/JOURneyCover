@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JOURney Journal Cover Voting</title>
+    <!-- favicon (you can change this as needed) -->
+    <link rel="shortcut icon" href="./assets/images/cover/favicon.png" type="image/png" />
+    <!-- custom css -->
+    <link rel="stylesheet" href="./assets/css/style.css" />
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Inline styles specific to the voting page -->
+    <style>
+      body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #121212;
+        color: #eee;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 0 20px;
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      form {
+        background: #1e1e1e;
+        padding: 20px;
+        border-radius: 8px;
+      }
+      .form-field {
+        margin-bottom: 15px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+      input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+      }
+      .sortable-list {
+        list-style: none;
+        padding: 0;
+        margin: 20px 0;
+        border: 1px solid #444;
+        border-radius: 8px;
+        background: #1e1e1e;
+      }
+      .sortable-item {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #333;
+        cursor: move;
+      }
+      .sortable-item:last-child {
+        border-bottom: none;
+      }
+      .sortable-item img {
+        width: 100px;
+        height: auto;
+        margin-right: 20px;
+        border-radius: 4px;
+      }
+      button {
+        padding: 10px 20px;
+        background: #007bff;
+        border: none;
+        border-radius: 4px;
+        color: #fff;
+        font-size: 1em;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+      .message {
+        margin-top: 20px;
+        text-align: center;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <h1>JOURney Journal Cover Voting</h1>
+      <form id="voteForm">
+        <div class="form-field">
+          <label for="firstName">First Name:</label>
+          <input type="text" id="firstName" name="firstName" required />
+        </div>
+        <div class="form-field">
+          <label for="lastName">Last Name:</label>
+          <input type="text" id="lastName" name="lastName" required />
+        </div>
+        <p>Drag and drop the images to rank them from your most‑preferred cover (top) to least‑preferred (bottom):</p>
+        <ul id="sortable" class="sortable-list">
+          <!-- Each list item represents an image option. 
+               The data-id attribute is used as a unique identifier. -->
+          <li class="sortable-item" data-id="1">
+            <img src="./assets/images/cover/cover1.jpg" alt="Cover Option 1" />
+            Cover Option 1
+          </li>
+          <li class="sortable-item" data-id="2">
+            <img src="./assets/images/cover/cover2.jpg" alt="Cover Option 2" />
+            Cover Option 2
+          </li>
+          <li class="sortable-item" data-id="3">
+            <img src="./assets/images/cover/cover3.jpg" alt="Cover Option 3" />
+            Cover Option 3
+          </li>
+          <!-- Add additional cover options as needed -->
+        </ul>
+        <button type="submit">Submit Vote</button>
+      </form>
+      <div id="message" class="message"></div>
+    </main>
+
+    <!-- Include SortableJS from a CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"
+      integrity="sha512-XePTMnqH6J/t+4JAXCys/MB5aZqj6ScTg3h5RSbxE+hv9GNWnXG6mI/hXotR/fqIjTxbebOiMGdlrsb7j0whXA=="
+      crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+      // Initialize Sortable for drag-and-drop ranking
+      const sortable = new Sortable(document.getElementById('sortable'), {
+        animation: 150
+      });
+
+      document.getElementById('voteForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const firstName = document.getElementById('firstName').value.trim();
+        const lastName = document.getElementById('lastName').value.trim();
+        if (!firstName || !lastName) {
+          document.getElementById('message').innerText = 'Please enter your first and last name.';
+          return;
+        }
+
+        // Gather the ranked order from the list (top item is highest ranked)
+        const items = document.querySelectorAll('#sortable .sortable-item');
+        let ranking = [];
+        items.forEach(item => {
+          ranking.push(item.getAttribute('data-id'));
+        });
+        // Convert the ranking array into a comma-separated string
+        const rankingStr = ranking.join(',');
+
+        // Replace the URL below with your deployed Google Apps Script web app URL
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyHugB4tHkeUbVSOIoItnhwmxg7C9GStb_EmM344yVQEUQ54_tHpIFVYYCzh5pOAN3Xiw/exec';
+
+        // Submit the vote using application/x-www-form-urlencoded content type
+        const formData = new URLSearchParams();
+        formData.append('firstName', firstName);
+        formData.append('lastName', lastName);
+        formData.append('ranking', rankingStr);
+
+        fetch(scriptURL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: formData.toString()
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.status === 'success') {
+              document.getElementById('message').innerText = 'Vote submitted successfully!';
+              // Optionally disable the form to prevent re‑voting:
+              document.getElementById('voteForm').reset();
+            } else {
+              document.getElementById('message').innerText = data.message || 'Vote not recorded.';
+            }
+          })
+          .catch(error => {
+            console.error('Error submitting vote:', error);
+            document.getElementById('message').innerText = 'Error submitting vote. Please try again later.';
+          });
+      });
+    </script>
+  </body>
+</html>
