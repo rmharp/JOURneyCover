@@ -4,7 +4,7 @@
     <meta http-equiv="X-UA-Compatible" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>JOURney Journal Cover Voting</title>
-    <!-- favicon (you can change this as needed) -->
+    <!-- favicon -->
     <link rel="shortcut icon" href="./media/favicon.png" type="image/png" />
     <!-- Google Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -13,7 +13,7 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
-    <!-- Inline styles specific to the voting page -->
+    <!-- Inline styles specific to this page -->
     <style>
       body {
         font-family: 'Poppins', sans-serif;
@@ -64,6 +64,8 @@
         padding: 10px;
         border-bottom: 1px solid #333;
         cursor: move;
+        /* Allow dragging on touch devices */
+        touch-action: none;
       }
       .sortable-item:last-child {
         border-bottom: none;
@@ -107,8 +109,7 @@
         </div>
         <p>Drag and drop the images to rank them from your most‑preferred cover (top) to least‑preferred (bottom):</p>
         <ul id="sortable" class="sortable-list">
-          <!-- Each list item represents an image option. 
-               The data-id attribute is used as a unique identifier. -->
+          <!-- Each list item represents an image option. -->
           <li class="sortable-item" data-id="1">
             <img src="./media/cover1.jpg" alt="Cover Option 1" />
             Cover Option 1
@@ -133,8 +134,8 @@
       integrity="sha512-XePTMnqH6J/t+4JAXCys/MB5aZqj6ScTg3h5RSbxE+hv9GNWnXG6mI/hXotR/fqIjTxbebOiMGdlrsb7j0whXA=="
       crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
-      // Initialize Sortable for drag-and-drop ranking
-      const sortable = new Sortable(document.getElementById('sortable'), {
+      // Initialize Sortable for the list
+      new Sortable(document.getElementById('sortable'), {
         animation: 150
       });
 
@@ -150,21 +151,21 @@
 
         // Gather the ranked order from the list (top item is highest ranked)
         const items = document.querySelectorAll('#sortable .sortable-item');
-        let ranking = [];
+        const ranking = [];
         items.forEach(item => {
           ranking.push(item.getAttribute('data-id'));
         });
-        // Convert the ranking array into a comma-separated string
+        // Create a comma-separated string from the ranking array
         const rankingStr = ranking.join(',');
 
-        // Replace the URL below with your deployed Google Apps Script web app URL
+        // Replace with your deployed Google Apps Script web app URL
         const scriptURL = 'https://script.google.com/macros/s/AKfycbyHugB4tHkeUbVSOIoItnhwmxg7C9GStb_EmM344yVQEUQ54_tHpIFVYYCzh5pOAN3Xiw/exec';
 
-        // Submit the vote using application/x-www-form-urlencoded content type
+        // Create URL-encoded parameters. Note: we now use 'vector' (not 'ranking')
         const formData = new URLSearchParams();
         formData.append('firstName', firstName);
         formData.append('lastName', lastName);
-        formData.append('ranking', rankingStr);
+        formData.append('vector', rankingStr);
 
         fetch(scriptURL, {
           method: 'POST',
@@ -173,9 +174,9 @@
         })
           .then(response => response.json())
           .then(data => {
-            if (data.status === 'success') {
+            if (data.averages) {
               document.getElementById('message').innerText = 'Vote submitted successfully!';
-              // Optionally disable the form to prevent re‑voting:
+              // Optionally, clear the form (or disable further submissions)
               document.getElementById('voteForm').reset();
             } else {
               document.getElementById('message').innerText = data.message || 'Vote not recorded.';
