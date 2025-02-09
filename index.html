@@ -15,8 +15,9 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
-    <!-- Inline styles specific to this page -->
+    <!-- Inline CSS for this page -->
     <style>
+      /* Overall page styles */
       body {
         font-family: 'Poppins', sans-serif;
         background-color: #121212;
@@ -52,34 +53,47 @@
         border: none;
         border-radius: 4px;
       }
+      /* Styles for the sortable list as portrait boxes */
       .sortable-list {
-        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
         padding: 0;
         margin: 20px 0;
-        border: 1px solid #444;
-        border-radius: 8px;
-        background: #1e1e1e;
       }
       .sortable-item {
-        display: flex;
-        align-items: center;
+        position: relative;
+        background: #1e1e1e;
         padding: 10px;
-        border-bottom: 1px solid #333;
+        border: 1px solid #333;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         cursor: move;
-        /* Helps with dragging on touch devices */
+        /* Disable native drag on the container */
         touch-action: none;
       }
-      .sortable-item:last-child {
-        border-bottom: none;
+      /* Rank indicator badge */
+      .rank-indicator {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        background: #007bff;
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 50%;
+        font-size: 1em;
+        font-weight: bold;
       }
       .sortable-item img {
-        width: 100px;
-        height: auto;
-        margin-right: 20px;
-        border-radius: 4px;
-        /* Prevent the image from being dragged on its own */
+        /* Display images in portrait mode */
+        max-width: 100%;
+        max-height: 400px;
+        object-fit: contain;
+        user-select: none;
+        /* Prevent image’s own dragging */
         pointer-events: none;
-        draggable: false;
       }
       button {
         padding: 10px 20px;
@@ -112,36 +126,52 @@
           <label for="lastName">Last Name:</label>
           <input type="text" id="lastName" name="lastName" required />
         </div>
-        <p>
-          Drag and drop the covers to rank them (top is most preferred):
-        </p>
+        <p>Drag and drop the covers to rank them (top is most preferred):</p>
         <ul id="sortable" class="sortable-list">
-          <!-- Only images, no text labels. The img elements have draggable="false" -->
+          <!-- Each sortable item includes a rank badge and a portrait image.
+               The images have ondragstart="return false" to disable ghost dragging. -->
           <li class="sortable-item" data-id="1" draggable="true">
-            <img src="./media/cover1.jpg" alt="Cover 1" draggable="false" />
+            <div class="rank-indicator"></div>
+            <img src="./media/cover1.jpg" alt="Cover 1" draggable="false" ondragstart="return false;" />
           </li>
           <li class="sortable-item" data-id="2" draggable="true">
-            <img src="./media/cover2.jpg" alt="Cover 2" draggable="false" />
+            <div class="rank-indicator"></div>
+            <img src="./media/cover2.jpg" alt="Cover 2" draggable="false" ondragstart="return false;" />
           </li>
           <li class="sortable-item" data-id="3" draggable="true">
-            <img src="./media/cover3.jpg" alt="Cover 3" draggable="false" />
+            <div class="rank-indicator"></div>
+            <img src="./media/cover3.jpg" alt="Cover 3" draggable="false" ondragstart="return false;" />
           </li>
-          <!-- Add additional cover options as needed -->
+          <!-- Add additional cover items as needed -->
         </ul>
         <button type="submit">Submit Vote</button>
       </form>
       <div id="message" class="message"></div>
     </main>
 
-    <!-- Include SortableJS from a CDN (without the integrity attribute) -->
+    <!-- Include SortableJS (without integrity attribute) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <script>
-      // Initialize Sortable with forceFallback enabled.
+      // Update rank badges based on current order.
+      function updateRanks() {
+        const items = document.querySelectorAll('#sortable .sortable-item');
+        items.forEach((item, index) => {
+          const indicator = item.querySelector('.rank-indicator');
+          if (indicator) {
+            indicator.innerText = index + 1;
+          }
+        });
+      }
+
+      // Initialize SortableJS with forceFallback to ensure smooth dragging.
       new Sortable(document.getElementById("sortable"), {
         animation: 150,
-        forceFallback: true
+        forceFallback: true,
+        onEnd: updateRanks,
       });
+      updateRanks();
 
+      // Handle form submission.
       document.getElementById("voteForm").addEventListener("submit", function (e) {
         e.preventDefault();
 
@@ -152,19 +182,18 @@
           return;
         }
 
-        // Gather the ranked order from the list (top item is highest ranked)
+        // Get the current order of image IDs.
         const items = document.querySelectorAll("#sortable .sortable-item");
         const ranking = [];
-        items.forEach((item) => {
+        items.forEach(item => {
           ranking.push(item.getAttribute("data-id"));
         });
-        // Create a comma‑separated string from the ranking array
         const rankingStr = ranking.join(",");
 
-        // Replace with your deployed Google Apps Script web app URL.
-        const scriptURL = "https://script.google.com/macros/s/AKfycbzfuS2BhjgA-biI-1xZqAUK3dXwTnGIk1r0dqDdFZljphcdgqxkp0IFODoS3U3TQt5wpA/exec";
+        // Replace with your deployed Apps Script web app URL.
+        const scriptURL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL";
 
-        // Create URL‑encoded parameters (using key "vector")
+        // Prepare URL-encoded parameters.
         const formData = new URLSearchParams();
         formData.append("firstName", firstName);
         formData.append("lastName", lastName);
@@ -172,25 +201,26 @@
 
         fetch(scriptURL, {
           method: "POST",
-          mode: "cors", // Use CORS so that the response is available
+          mode: "cors",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: formData.toString(),
         })
-          .then((response) => {
+          .then(response => {
             if (!response.ok) {
               throw new Error("Network response was not ok");
             }
             return response.json();
           })
-          .then((data) => {
+          .then(data => {
             if (data.status === "success") {
               document.getElementById("message").innerText = "Vote submitted successfully!";
               document.getElementById("voteForm").reset();
+              updateRanks();
             } else {
               document.getElementById("message").innerText = data.message || "Vote not recorded.";
             }
           })
-          .catch((error) => {
+          .catch(error => {
             console.error("Error submitting vote:", error);
             document.getElementById("message").innerText = "Error submitting vote. Please try again later.";
           });
