@@ -67,11 +67,12 @@
         padding: 10px;
         border: 1px solid #333;
         border-radius: 8px;
+        /* Use a column layout and center items both horizontally and vertically */
         display: flex;
         flex-direction: column;
-        align-items: center;
+        justify-content: center;  /* centers content vertically */
+        align-items: center;      /* centers content horizontally */
         cursor: move;
-        /* Disable native drag on the container */
         touch-action: none;
       }
       /* Rank indicator badge */
